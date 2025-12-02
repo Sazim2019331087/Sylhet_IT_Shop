@@ -40,6 +40,10 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             padding: 0;
             color: var(--text-color);
         }
+        
+        body.modal-open {
+            overflow: hidden;
+        }
 
         /* --- Navbar --- */
         .navbar {
@@ -50,7 +54,6 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             top: 0;
             z-index: 100;
         }
-
         .navbar-container {
             display: flex;
             justify-content: space-between;
@@ -59,7 +62,6 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             margin: 0 auto;
             height: 70px;
         }
-
         .navbar-brand {
             font-size: 1.5rem;
             font-weight: 700;
@@ -68,7 +70,6 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             -webkit-text-fill-color: transparent;
             text-decoration: none;
         }
-
         .navbar-links {
             display: flex;
             align-items: center;
@@ -76,16 +77,6 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             margin: 0;
             padding: 0;
         }
-
-        .navbar-links a {
-            text-decoration: none;
-            color: var(--text-light);
-            font-weight: 500;
-            transition: color 0.3s ease;
-            padding: 0 1rem;
-        }
-        
-        /* --- "My Profile" Button Style --- */
         .navbar-links a.nav-button {
             background: transparent;
             color: var(--primary-color);
@@ -94,6 +85,7 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             border-radius: 50px;
             font-weight: 600;
             transition: all 0.3s ease;
+            text-decoration: none;
         }
         .navbar-links a.nav-button:hover {
             background: var(--primary-color);
@@ -106,32 +98,27 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             margin: 2rem auto;
             padding: 0 2rem;
         }
-        
         .page-title {
             font-size: 2rem;
             font-weight: 700;
             margin-bottom: 2rem;
         }
-
         .cart-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 2rem;
         }
-        
         .cart-items-container {
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
         }
-        
         .cart-items-list {
             background: var(--card-bg);
             border-radius: 12px;
             box-shadow: var(--shadow);
             overflow: hidden;
         }
-        
         .cart-table {
             width: 100%;
             border-collapse: collapse;
@@ -148,7 +135,6 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             font-size: 0.8rem;
             text-transform: uppercase;
         }
-        
         .item-image {
             width: 70px;
             height: 70px;
@@ -156,7 +142,6 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             border-radius: 8px;
             background-color: #f9f9f9;
         }
-        
         .cart-table td.item-name {
             font-size: 1.1rem;
             font-weight: 600;
@@ -169,7 +154,6 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             font-weight: 600;
             color: var(--primary-color);
         }
-        
         .shop-more-button {
             background: var(--card-bg);
             color: var(--primary-color);
@@ -197,14 +181,12 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             position: sticky;
             top: 90px;
         }
-        
         .order-summary h2 {
             margin-top: 0;
             font-size: 1.5rem;
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 0.75rem;
         }
-        
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -227,11 +209,14 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             border: 2px solid var(--bg-color);
             transition: border-color 0.3s ease;
         }
+        /* Style for validation error */
+        .form-group input[type="text"].input-error {
+            border-color: var(--red-color);
+        }
         .form-group input[type="text"]:focus {
             outline: none;
             border-color: var(--primary-color);
         }
-        
         .map-button {
             position: absolute;
             right: 10px;
@@ -244,24 +229,15 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             font-weight: 600;
             font-size: 0.9rem;
         }
-        .map-button:hover {
-            text-decoration: underline;
-        }
-
-        .price-breakdown {
-            margin-bottom: 1.5rem;
-            font-size: 1rem;
-        }
+        .map-button:hover { text-decoration: underline; }
+        .price-breakdown { margin-bottom: 1.5rem; font-size: 1rem; }
         .price-line {
             display: flex;
             justify-content: space-between;
             margin-bottom: 0.75rem;
             color: var(--text-light);
         }
-        .price-line span:last-child {
-            font-weight: 600;
-            color: var(--text-color);
-        }
+        .price-line span:last-child { font-weight: 600; color: var(--text-color); }
         .price-total {
             display: flex;
             justify-content: space-between;
@@ -277,7 +253,6 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             font-weight: 700;
             color: var(--primary-color);
         }
-        
         .confirm-button {
             display: block;
             width: 100%;
@@ -305,8 +280,6 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             position: relative;
             top: -1px;
         }
-
-        /* --- Empty Cart Styling --- */
         .empty-cart-container {
             text-align: center;
             background: var(--card-bg);
@@ -315,29 +288,111 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             box-shadow: var(--shadow);
             margin-top: 2rem;
         }
-        .empty-cart-container h1 {
-            font-size: 2rem;
-            color: var(--primary-color);
-        }
+        .empty-cart-container h1 { font-size: 2rem; color: var(--primary-color); }
         .empty-cart-container p {
             font-size: 1.1rem;
             color: var(--text-light);
             margin-bottom: 2rem;
         }
-        
-        /* --- Responsive --- */
+
+        /* --- NEW: Payment Modal Styles --- */
+        .modal-overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 450px;
+            padding: 2rem;
+            box-sizing: border-box;
+            text-align: center;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .modal-content h3 {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+        .modal-content p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+        .modal-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .modal-button {
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        .btn-bank {
+            background: var(--gradient);
+            color: white;
+        }
+        .btn-bank:hover {
+             box-shadow: 0 5px 15px rgba(74, 0, 224, 0.3);
+        }
+        .btn-bkash {
+            background-color: #E2136E; /* bKash Pink */
+            color: white;
+        }
+        .btn-bkash:hover {
+            opacity: 0.8;
+        }
+        .btn-stripe {
+            background-color: #5469d4; /* Stripe Blue */
+            color: white;
+        }
+        .btn-stripe:hover {
+            opacity: 0.8;
+        }
+        .modal-close {
+            margin-top: 1.5rem;
+            color: var(--text-light);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .modal-close:hover {
+            text-decoration: underline;
+        }
+        /* --- End Modal Styles --- */
+
         @media (max-width: 992px) {
-            .cart-grid {
-                grid-template-columns: 1fr;
-            }
-            .order-summary {
-                position: static;
-                top: auto;
-            }
+            .cart-grid { grid-template-columns: 1fr; }
+            .order-summary { position: static; top: auto; }
         }
     </style>
-        <link rel="icon" href="shop_icon.png" type="image/x-icon">
-
+    <link rel="icon" href="shop_icon.png" type="image/x-icon">
 </head>
 <body>
 
@@ -356,19 +411,20 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
             <div class="empty-cart-container">
                 <h1>Your cart is empty</h1>
                 <p>Looks like you haven't added anything to your cart yet.</p>
-                <a href="market.php"><button class="confirm-button">Start Shopping</button></a>
+                <a href="market.php" class="button confirm-button" style="width: 250px; margin: 0 auto; background: var(--gradient);">Start Shopping</a>
             </div>
         
         <?php else: ?>
-	    <h1 class="page-title">Shopping Cart</h1>
+            <h1 class="page-title">Shopping Cart</h1>
             <div class="cart-grid">
+                
                 <div class="cart-items-container">
                     <div class="cart-items-list">
                         <table class="cart-table">
                             <thead>
                                 <tr>
-				    <th>Product</th>
-				    <th>Pieces</th>
+                                    <th>Product</th>
+                                    <th>Pieces</th>
                                     <th>Price</th>
                                 </tr>
                             </thead>
@@ -377,6 +433,7 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
                                 if($laptop !== "0") {
                                     echo "<tr>
                                             <td><img src='./products/laptop.png' alt='Laptop' class='item-image'></td>
+                                        
                                             <td class='item-quantity'>$laptop</td>
                                             <td class='item-price'>$lp BDT</td>
                                           </tr>";
@@ -384,6 +441,7 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
                                 if($mobile !== "0") {
                                     echo "<tr>
                                             <td><img src='./products/mobile.png' alt='Mobile' class='item-image'></td>
+                                           
                                             <td class='item-quantity'>$mobile</td>
                                             <td class='item-price'>$mp BDT</td>
                                           </tr>";
@@ -391,6 +449,7 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
                                 if($calculator !== "0") {
                                     echo "<tr>
                                             <td><img src='./products/calculator.png' alt='Calculator' class='item-image'></td>
+                                            
                                             <td class='item-quantity'>$calculator</td>
                                             <td class='item-price'>$cp BDT</td>
                                           </tr>";
@@ -401,9 +460,9 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
                     </div>
                     <a href="market.php" class="shop-more-button">&larr; Back to Shop</a>
                 </div>
-          
+                
                 <div class="order-summary">
-                    <form action="pay.php" method="POST">
+                    <form method="POST" id="checkoutForm">
                         <h2>Order Summary</h2>
                         
                         <input type="text" name="tp" value="<?php echo $total_price;?>" hidden>
@@ -433,7 +492,7 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
                             </div>
                         </div>
                         
-                        <button type="submit" name="confirm" class="confirm-button">
+                        <button type="button" name="confirm" class="confirm-button" id="confirmButton">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                               <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2zM9 11.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                             </svg>
@@ -441,10 +500,66 @@ $is_cart_empty = ($laptop === "0" && $mobile === "0" && $calculator === "0");
                         </button>
                     </form>
                 </div>
-                
             </div>
         <?php endif; ?>
-        
     </div>
+    
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal-content">
+            <h3>Select Payment Method</h3>
+            <p>How would you like to pay for your order?</p>
+            <div class="modal-buttons">
+                <button class="modal-button btn-bank" id="payWithBank">
+                    Pay with SUSTAINABLE BANK
+                </button>
+                <button class="modal-button btn-stripe" id="payWithStripe">
+                    Pay with Stripe
+                </button>
+            </div>
+            <button class="modal-close" id="modalCloseButton">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            var checkoutForm = $('#checkoutForm');
+            var addressInput = $('#addr');
+            var modal = $('#paymentModal');
+
+            // 1. Open the modal when "Confirm & Pay" is clicked
+            $('#confirmButton').on('click', function() {
+                // First, validate the address
+                if (addressInput.val() === "") {
+                    addressInput.addClass('input-error'); // Add error class
+                    alert('Please enter a delivery address.');
+                } else {
+                    addressInput.removeClass('input-error'); // Remove error class
+                    $('body').addClass('modal-open');
+                    modal.addClass('active');
+                }
+            });
+
+            // 2. Close the modal
+            function closeModal() {
+                $('body').removeClass('modal-open');
+                modal.removeClass('active');
+            }
+
+            $('#modalCloseButton').on('click', closeModal);
+
+            // 3. Handle payment choice
+            // If Bank is clicked, set form action to pay.php and submit
+            $('#payWithBank').on('click', function() {
+                checkoutForm.attr('action', 'pay.php');
+                checkoutForm.submit();
+            });
+
+            // If Stripe is clicked, set form action to your new checkout.php
+            $('#payWithStripe').on('click', function() {
+                checkoutForm.attr('action', 'checkout.php'); // New Stripe page
+                checkoutForm.submit();
+            });
+        });
+    </script>
 </body>
 </html>

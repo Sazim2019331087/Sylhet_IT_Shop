@@ -107,6 +107,12 @@ try {
     $stmt4->execute();
     $stmt4->close();
     
+    $stmt5 = $con->prepare("INSERT INTO bank_payment_details (payment_id, sender_account, receiver_account, amount, payment_time, status) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt5->bind_param("ssssss", $pay_id, $sender_account, $receiver_account, $amount, $payment_time, $payment_status);
+    $stmt5->execute();
+    $stmt5->close();
+    
+
     // --- 6. Insert into order_details ---
     $status = "ORDER CONFIRMED";
     // Check if the sender is the admin to set the correct order status

@@ -40,6 +40,15 @@ CREATE TABLE payment_details(
     status VARCHAR(200) DEFAULT "CANCELLED"
 );
 
+CREATE TABLE bank_payment_details(
+    payment_id VARCHAR(200) PRIMARY KEY,
+    sender_account VARCHAR(200),
+    receiver_account VARCHAR(200),
+    amount VARCHAR(200),
+    payment_time VARCHAR(200),
+    status VARCHAR(200) DEFAULT "CANCELLED"
+);
+
 CREATE TABLE order_details(
     payment_id VARCHAR(200) PRIMARY KEY,
     laptop INT,

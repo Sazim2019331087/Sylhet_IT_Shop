@@ -39,7 +39,7 @@ if ($result->num_rows > 0) {
 $stmt->close();
 
 // 2. Get Total Debit (Sent)
-$stmt_debit = $con->prepare("SELECT SUM(amount) as total_debit FROM payment_details WHERE sender_account = ?");
+$stmt_debit = $con->prepare("SELECT SUM(amount) as total_debit FROM bank_payment_details WHERE sender_account = ?");
 $stmt_debit->bind_param("s", $account_number);
 $stmt_debit->execute();
 $r_debit = $stmt_debit->get_result()->fetch_assoc();
@@ -47,7 +47,7 @@ $total_debit = $r_debit['total_debit'] ?? 0;
 $stmt_debit->close();
 
 // 3. Get Total Credit (Received)
-$stmt_credit = $con->prepare("SELECT SUM(amount) as total_credit FROM payment_details WHERE receiver_account = ?");
+$stmt_credit = $con->prepare("SELECT SUM(amount) as total_credit FROM bank_payment_details WHERE receiver_account = ?");
 $stmt_credit->bind_param("s", $account_number);
 $stmt_credit->execute();
 $r_credit = $stmt_credit->get_result()->fetch_assoc();
@@ -65,7 +65,7 @@ $sql_all_transactions = "
             WHEN receiver_account = ? THEN 'RECEIVED'
         END AS transaction_type
     FROM 
-        payment_details
+        bank_payment_details
     WHERE 
         sender_account = ? OR receiver_account = ?
     ORDER BY

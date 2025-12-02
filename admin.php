@@ -37,7 +37,7 @@ if (isset($_GET['json_data'])) {
             c.name as customer_name, c.email as customer_email, c.account_number
         FROM order_details o
         JOIN payment_details p ON o.payment_id = p.payment_id
-        JOIN customer_details c ON p.sender_account = c.account_number
+        LEFT JOIN customer_details c ON p.sender_account = c.account_number
         WHERE o.status = 'ORDER CONFIRMED'
         ORDER BY STR_TO_DATE(
             REPLACE(REPLACE(REPLACE(REPLACE(o.payment_time, 'st', ''), 'nd', ''), 'rd', ''), 'th', ''),
@@ -69,11 +69,33 @@ if (isset($_GET['json_data'])) {
             $calculator_in_demand += (int)$r1["calculator"];
         }
 
+        // --- LOGIC FIX: Handle Stripe vs Bank Users ---
+        $cust_name = $r1['customer_name'];
+        $cust_email = $r1['customer_email'];
+        $cust_acc = $r1['account_number'];
+
+        // If name is empty, the LEFT JOIN failed, meaning it's likely a Stripe/Manual payment
+        if (empty($cust_name)) {
+            // Check if it's a Stripe payment string
+            if (strpos($r1['sender_account'], 'Stripe |') !== false) {
+                $cust_name = "Stripe Payment";
+                // Extract email from "Stripe | email@example.com"
+                $cust_email = str_replace("Stripe | ", "", $r1['sender_account']);
+                $cust_acc = "Paid via Card";
+            } else {
+                // Fallback for unknown or manual bKash
+                $cust_name = "Stripe User";
+                $cust_email = "Paid via Card";
+                $cust_acc = "Stripe";
+            }
+        }
+
+
         $response['orders'][] = [
             'pay_id' => $r1['payment_id'],
-            'customer_name' => $r1['customer_name'],
-            'customer_email' => $r1['customer_email'],
-            'account_number' => $r1['account_number'],
+            'customer_name' => $cust_name,
+            'customer_email' => $cust_email,
+            'account_number' => $cust_acc,
             'total_amount' => $r1['amount'],
             'payment_time' => $r1['payment_time'],
             'product_details' => $product_details,
