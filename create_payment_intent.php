@@ -42,8 +42,8 @@ $addr = $cart['addr'];
 // --- 1. Create the Order in your database with "PENDING" status ---
 $payment_id = "stripe-" . mt_rand(10000, 99999);
 $receiver = "stripe-" . $admin_account_number;
-$status_for_order = "ORDER CONFIRMED";
-$status_for_payment = "SUCCESSFUL";
+$status_for_order = "PENDING";
+$status_for_payment = "PENDING";
 $delivery_time = "TBA";
 
 $con->begin_transaction();

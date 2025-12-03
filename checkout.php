@@ -156,7 +156,7 @@ $is_logged_in = isset($_SESSION['email']);
         <script>
             $(document).ready(function() {
                 // Your Stripe Publishable Key
-                const stripe = Stripe('pk_test_51SXbxRRmuGPEAJFEXVeSkgBVc0OCjGxe6SPlfghI4siwFDaGVwYMx3XjDz8C82gEdCybM01cTn3MSdj2dUbUJWfe00KBldVLgT'); // PUT YOUR KEY HERE
+                const stripe = Stripe('STRIPE_KEY_HERE'); // PUT YOUR KEY HERE
                 
                 let elements;
                 initialize();
@@ -190,25 +190,67 @@ $is_logged_in = isset($_SESSION['email']);
                     const paymentElement = elements.create("payment");
                     paymentElement.mount("#payment-element");
                 }
+				
+async function handleSubmit(e) {
+                e.preventDefault();
+                setLoading(true);
 
-                async function handleSubmit(e) {
-                    e.preventDefault();
-                    setLoading(true);
+                const result = await stripe.confirmPayment({
+                    elements,
+                    confirmParams: {
+                        return_url: "http://sylhetitshop.zya.me/stripe_success.php",
+                    },
+                });
 
-                    const { error } = await stripe.confirmPayment({
-                        elements,
-                        confirmParams: {
-                            // Return URL for localhost XAMPP
-                            return_url: "http://localhost/Sylhet_IT_Shop/stripe_success.php",
-                        },
-                    });
+                // If we are here, an error occurred (otherwise it redirects)
+                const error = result.error;
 
-                    if (error) {
-                        $('#error-message').text(error.message);
-                        setLoading(false);
+                if (error) {
+                    console.log("Full Stripe Error:", error);
+
+                    let msg = error.message; // Fallback to Stripe's default message
+
+                    // 1. Prioritize Decline Codes (Bank Rejections)
+                    if (error.decline_code) {
+                        switch (error.decline_code) {
+                            case 'insufficient_funds':
+                                msg = "Your card has insufficient funds.";
+                                break;
+                            case 'lost_card':
+                                msg = "This card has been reported lost.";
+                                break;
+                            case 'stolen_card':
+                                msg = "This card has been reported stolen.";
+                                break;
+                            case 'expired_card':
+                                msg = "Your card has expired.";
+                                break;
+                            case 'incorrect_cvc':
+                                msg = "The CVC number is incorrect.";
+                                break;
+                            case 'processing_error':
+                                msg = "An error occurred while processing the card.";
+                                break;
+                            case 'generic_decline':
+                                msg = "Your card was declined by the bank.";
+                                break;
+                        }
+                    } 
+                    // 2. Handle Validation Errors (User Typos)
+                    else if (error.type === "validation_error") {
+                         // Stripe's default messages for validation are usually good, 
+                         // but you can override them if you want specific wording.
+                         if (error.code === 'incomplete_number') msg = "Please enter the full card number.";
+                         if (error.code === 'invalid_number') msg = "The card number is invalid.";
+                         if (error.code === 'incomplete_expiry') msg = "Please enter the expiration date.";
+                         if (error.code === 'incomplete_cvc') msg = "Please enter the security code (CVC).";
                     }
-                }
 
+                    $('#error-message').text(msg);
+                    setLoading(false);
+                }
+            }
+                
                 function setLoading(isLoading) {
                     if (isLoading) {
                         $('#submit').prop('disabled', true).text("Processing...");
