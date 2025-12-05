@@ -29,9 +29,10 @@ $total_orders = 0;
 $favorite_item = "N/A";
 
 // 1. Get Total Spent (Bank + Stripe)
+$st = "PENDING";
 // We check if sender_account matches the bank number OR the stripe ID
-$stmt_spent = $con->prepare("SELECT SUM(amount) as total_spent FROM payment_details WHERE sender_account = ? OR sender_account = ?");
-$stmt_spent->bind_param("ss", $account_number, $stripe_sender_id);
+$stmt_spent = $con->prepare("SELECT SUM(amount) as total_spent FROM payment_details WHERE status != ? AND ( sender_account = ? OR sender_account = ?)");
+$stmt_spent->bind_param("sss", $st , $account_number, $stripe_sender_id);
 $stmt_spent->execute();
 $r_spent = $stmt_spent->get_result()->fetch_assoc();
 $total_spent = $r_spent['total_spent'] ?? 0;
@@ -46,9 +47,10 @@ $stmt_items = $con->prepare("
         SUM(o.calculator) as calculator_total
     FROM order_details o
     JOIN payment_details p ON o.payment_id = p.payment_id
-    WHERE p.sender_account = ? OR p.sender_account = ?
+    WHERE o.status != ? AND ( p.sender_account = ? OR p.sender_account = ?)
 ");
-$stmt_items->bind_param("ss", $account_number, $stripe_sender_id);
+
+$stmt_items->bind_param("sss",$st,$account_number, $stripe_sender_id);
 $stmt_items->execute();
 $r_items = $stmt_items->get_result()->fetch_assoc();
 $total_orders = $r_items['order_count'] ?? 0;
