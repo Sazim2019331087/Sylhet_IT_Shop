@@ -1,16 +1,15 @@
 <?php
-// We must start the session at the very top
 session_start();
 require "config.php";
 require "local_time.php";
+require "google_config_customer.php"; // Include the Google Config
 
-$error_message = ""; // Variable to hold our error message
+$error_message = "";
 
 if (isset($_POST["login_account"])) {
     $email = $_POST["email"];
     $password = $_POST["password"];
 
-    // --- CRITICAL SECURITY FIX 1: Use Prepared Statements ---
     $stmt1 = $con->prepare("SELECT * FROM customer_details WHERE email = ?");
     $stmt1->bind_param("s", $email);
     $stmt1->execute();
@@ -18,30 +17,26 @@ if (isset($_POST["login_account"])) {
 
     if ($result->num_rows === 1) {
         $details = $result->fetch_assoc();
-        
         $hashed_password_from_db = $details["password"];
 
-        // --- CRITICAL SECURITY FIX 2: Use password_verify() ---
-        // This securely checks the user's password against the hash in the DB
-        if (password_verify($password, $hashed_password_from_db)) {
-            // Login Success!
-            session_regenerate_id(true); // Protects against session fixation
-            
+        // Check if this is a Google-only account (NULL password)
+        if ($hashed_password_from_db === NULL) {
+            $error_message = "Please sign in using Google.";
+        }
+        elseif (password_verify($password, $hashed_password_from_db)) {
+            session_regenerate_id(true);
             $_SESSION["email"] = $details["email"];
             $_SESSION["account_number"] = $details["account_number"];
             $_SESSION["secret"] = $details["secret"];
             $_SESSION["name"] = $details["name"];
-            // We DO NOT store the plain-text password in the session.
             
             header("location:customer_profile.php");
             exit;
         } else {
-            // Password was incorrect
-            $error_message = "The password you entered is incorrect. Please try again!";
+            $error_message = "The password you entered is incorrect.";
         }
     } else {
-        // No account found
-        $error_message = "No account was found with that email address.";
+        $error_message = "No account was found with that email.";
     }
     $stmt1->close();
 }
@@ -80,7 +75,6 @@ if (isset($_POST["login_account"])) {
             box-sizing: border-box;
         }
 
-        /* --- Login Card --- */
         .login-container {
             width: 100%;
             max-width: 450px;
@@ -101,130 +95,64 @@ if (isset($_POST["login_account"])) {
             margin-bottom: 2rem;
         }
         
-        .form-container {
-            text-align: left;
+        .form-container { text-align: left; }
+        .input-group { margin-bottom: 1.25rem; }
+        .input-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+        .input-group input {
+            width: 100%; padding: 14px; border: none; background-color: var(--bg-color);
+            border-radius: 8px; font-size: 1rem; box-sizing: border-box;
+            border: 2px solid var(--bg-color); transition: border-color 0.3s ease;
         }
-        .input-group {
-            margin-bottom: 1.25rem;
-        }
-        .input-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .input-group input[type="email"],
-        .input-group input[type="password"],
-        .input-group input[type="text"] {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            background-color: var(--bg-color);
-            border-radius: 8px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            border: 2px solid var(--bg-color);
-            transition: border-color 0.3s ease;
-        }
-        .input-group input#password {
-            padding-right: 65px; /* Make room for show/hide button */
-        }
-        .input-group input[type="email"]:focus,
-        .input-group input[type="password"]:focus,
-        .input-group input[type="text"]:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
+        .input-group input#password { padding-right: 65px; }
+        .input-group input:focus { outline: none; border-color: var(--primary-color); }
 
-        /* Password Wrapper and Toggle Button */
-        .password-wrapper {
-            position: relative;
-        }
+        .password-wrapper { position: relative; }
         .toggle-password {
-            position: absolute;
-            top: 50%;
-            right: 10px;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text-light);
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            padding: 5px;
-            z-index: 10;
+            position: absolute; top: 50%; right: 10px; transform: translateY(-50%);
+            background: none; border: none; color: var(--text-light);
+            font-weight: 600; font-size: 0.9rem; cursor: pointer; padding: 5px;
         }
-        .toggle-password:hover {
-            color: var(--primary-color);
-        }
+        .toggle-password:hover { color: var(--primary-color); }
 
-        /* Buttons */
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
+        .form-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
         .button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            font-size: 1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
+            display: block; width: 100%; padding: 15px; font-size: 1rem;
+            font-weight: 600; border: none; border-radius: 8px; cursor: pointer;
+            text-align: center; text-decoration: none; transition: all 0.3s ease;
         }
-        .btn-submit {
-            background: var(--gradient);
-            color: white;
-            background-size: 200% auto;
+        .btn-submit { background: var(--gradient); color: white; background-size: 200% auto; }
+        .btn-submit:hover { background-position: right center; box-shadow: 0 5px 15px rgba(74, 0, 224, 0.3); }
+        .btn-reset { background: var(--light-gray-bg); color: var(--text-light); border: 2px solid var(--light-gray-bg); }
+        .btn-reset:hover { background: #dfe3e6; color: var(--text-color); border-color: #dfe3e6; }
+        
+        /* Google Button */
+        .google-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            background: white; color: #333; border: 1px solid #ddd; padding: 10px 20px;
+            border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 0.95rem;
+            transition: all 0.3s ease; width: 100%; box-sizing: border-box;
         }
-        .btn-submit:hover {
-            background-position: right center;
-            box-shadow: 0 5px 15px rgba(74, 0, 224, 0.3);
-        }
-        .btn-reset {
-            background: var(--light-gray-bg);
-            color: var(--text-light);
-            border: 2px solid var(--light-gray-bg);
-        }
-        .btn-reset:hover {
-            background: #dfe3e6;
-            color: var(--text-color);
-            border-color: #dfe3e6;
+        .google-btn:hover {
+            background-color: #f1f1f1; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
+        .forgot-link-wrapper { text-align: right; margin-top: -0.75rem; margin-bottom: 1.25rem; }
+        .forgot-link { font-size: 0.9rem; color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .forgot-link:hover { text-decoration: underline; }
+
         .signup-link {
-            display: block;
-            margin-top: 1.5rem;
-            padding: 12px;
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: 1rem;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            transition: all 0.3s ease;
+            display: block; margin-top: 1.5rem; padding: 12px; color: var(--text-light);
+            text-decoration: none; font-size: 1rem; border: 2px solid var(--border-color);
+            border-radius: 8px; transition: all 0.3s ease;
         }
-        .signup-link:hover {
-            background: var(--bg-color);
-            color: var(--primary-color);
-            border-color: var(--bg-color);
-        }
+        .signup-link:hover { background: var(--bg-color); color: var(--primary-color); border-color: var(--bg-color); }
         
-        /* Error Message */
         .error-message {
-            background: var(--red-light-bg);
-            border: 1px solid var(--red-light-border);
-            color: var(--red-color);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
+            background: var(--red-light-bg); border: 1px solid var(--red-light-border);
+            color: var(--red-color); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 600;
         }
     </style>
-        <link rel="icon" href="shop_icon.png" type="image/x-icon">
+    <link rel="icon" href="shop_icon.png" type="image/x-icon">
 
 </head>
 <body>
@@ -233,9 +161,7 @@ if (isset($_POST["login_account"])) {
         <p class="subtitle">Welcome back! Please login to your account.</p>
 
         <?php if (!empty($error_message)): ?>
-            <div class="error-message">
-                <?php echo $error_message; ?>
-            </div>
+            <div class="error-message"><?php echo $error_message; ?></div>
         <?php endif; ?>
 
         <form action="customer_login.php" method="POST" class="form-container">
@@ -247,9 +173,13 @@ if (isset($_POST["login_account"])) {
             <div class="input-group">
                 <label for="password">Password:</label>
                 <div class="password-wrapper">
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <input type="password" id="password" name="password" placeholder="Enter your password">
                     <button type="button" id="togglePassword" class="toggle-password">Show</button>
                 </div>
+            </div>
+            
+            <div class="forgot-link-wrapper">
+                <a href="forgot_password.php?type=customer" class="forgot-link">Forgot Password?</a>
             </div>
 
             <div class="form-actions">
@@ -258,9 +188,16 @@ if (isset($_POST["login_account"])) {
             </div>
         </form>
         
-        <a href="customer_sign_up.php" class="signup-link">Don't have an account? Create one.</a>
-        <a href="forgot_password.php" class="signup-link"style="color:red;">Forgot Password?</a>
-		
+        <div style="text-align: center; margin: 20px 0;">
+            <span style="color: #777; font-size: 0.9rem;">OR</span>
+            <br><br>
+            <a href="<?php echo $client->createAuthUrl(); ?>" class="google-btn">
+                <img src="google.svg" alt="Google" width="20">
+                Continue with Google
+            </a>
+        </div>
+        
+        <a href="customer_sign_up.php" class="signup-link">Don't have an account? Create one</a>
     </div>
 
     <script>
@@ -268,7 +205,6 @@ if (isset($_POST["login_account"])) {
         $('#togglePassword').on('click', function() {
             var passwordField = $('#password');
             var passwordFieldType = passwordField.attr('type');
-            
             if (passwordFieldType === 'password') {
                 passwordField.attr('type', 'text');
                 $(this).text('Hide');
