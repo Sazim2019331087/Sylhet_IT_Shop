@@ -27,7 +27,7 @@ if (isset($_GET['json_data'])) {
             OR 
             (p.sender_account LIKE 'Stripe | %' AND c.email = TRIM(SUBSTRING(p.sender_account, 10)))
         )
-        WHERE o.status = 'ORDER CONFIRMED' OR o.status = 'PENDING'
+        WHERE o.status = 'ORDER CONFIRMED'
         ORDER BY STR_TO_DATE(
             REPLACE(REPLACE(REPLACE(REPLACE(o.payment_time, 'st', ''), 'nd', ''), 'rd', ''), 'th', ''),
             '%h:%i:%s %p %d %M , %Y %W'
