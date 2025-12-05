@@ -335,7 +335,7 @@
         }
         
         /* --- Partner Section --- */
-        .partner-section {
+       .partner-section {
             background: var(--card-bg);
             padding: 3rem 2rem;
             text-align: center;
@@ -346,19 +346,47 @@
             color: var(--text-light);
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin: 0 0 1rem 0;
+            margin: 0 0 2rem 0;
         }
         
-        .partner-section a {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #3498db;
+        .partner-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .partner-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             text-decoration: none;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
             transition: all 0.3s ease;
+            border: 1px solid transparent;
         }
-        .partner-section a:hover {
-            opacity: 0.7;
+        .partner-link:hover {
+            background-color: #f9fafb;
+            border-color: #e5e7eb;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
+        
+        .bank-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #3498db; /* Bank's blue color */
+        }
+        
+        .stripe-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #635bff; /* Stripe blurple */
+            letter-spacing: -0.5px;
+        }
+
 
         /* --- Footer --- */
         footer {
@@ -602,8 +630,26 @@
         </div>
 
         <section class="partner-section">
-            <h4>Our Official Payment Partner</h4>
-            <a href="bank_login.php" title="Login to SUSTainable Bank">SUSTAINABLE BANK LTD</a>
+            <h4>Official Payment Partners</h4>
+            <div class="partner-logos">
+                <!-- SUSTainable Bank Logo -->
+                <a href="bank_login.php" class="partner-link" title="Login to SUSTainable Bank">
+                    <!-- Replaced FontAwesome with inline SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 1.8rem; height: 1.8rem; color: #3498db;">
+                      <path d="M11.99 2.005L2 7.002v2h2v11h2v-11h2v11h4v-11h2v11h4v-11h2v-2L11.99 2.005zm-8 18v2h16v-2H3.99z"/>
+                    </svg>
+                    <span class="bank-name">SUSTainable Bank</span>
+                </a>
+                
+                <!-- Stripe Logo -->
+                <a href="https://stripe.com" target="_blank" class="partner-link" title="Payments by Stripe">
+                    <!-- Replaced FontAwesome with inline SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 2rem; height: 2rem; color: #635bff;">
+                        <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                    </svg>
+                    <span class="stripe-name">Stripe</span>
+                </a>
+            </div>
         </section>
     </main>
 
