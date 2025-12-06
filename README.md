@@ -61,6 +61,7 @@ This flowchart illustrates the complete path a customer takes from landing on th
 
 ```mermaid
 graph TD
+    %% Nodes
     A[Visitor] -->|Visits| B(Landing Page)
     B --> C{Has Account?}
     C -- No --> D[Sign Up / Google OAuth]
@@ -76,6 +77,22 @@ graph TD
     K -->|Validates PIN| L
     L --> M[Update Database]
     L --> N[Send Email Receipt]
+
+    %% Styles
+    classDef start fill:#f9f,stroke:#333,stroke-width:2px,color:black;
+    classDef page fill:#bbf,stroke:#333,stroke-width:2px,color:black;
+    classDef decision fill:#ff9,stroke:#333,stroke-width:2px,color:black;
+    classDef action fill:#bfb,stroke:#333,stroke-width:2px,color:black;
+    classDef process fill:#fbb,stroke:#333,stroke-width:2px,color:black;
+    classDef endstate fill:#9f9,stroke:#333,stroke-width:4px,color:black;
+
+    %% Apply Styles
+    class A start;
+    class B,D,E,F,G,H page;
+    class C,I decision;
+    class J,K action;
+    class M,N process;
+    class L endstate;
 ````
 
 ### 2\. Database Schema (ER Diagram)
@@ -84,37 +101,69 @@ A visualization of the relational database structure linking customers, banking 
 
 ```mermaid
 erDiagram
+    %% --- E-Commerce Core ---
     CUSTOMER_DETAILS ||--o{ ORDER_DETAILS : places
-    CUSTOMER_DETAILS ||--|| BANK_DETAILS : links
+    CUSTOMER_DETAILS ||--o{ OTP_VERIFICATION : "security check"
     
+    %% --- Inventory ---
+    ORDER_DETAILS }|--|{ PRODUCT_DETAILS : "contains items"
+
+    %% --- Financials ---
+    ORDER_DETAILS ||--|| PAYMENT_DETAILS : "generates invoice"
+    
+    %% --- External Integrations (Visualized) ---
+    PAYMENT_DETAILS }|--|| STRIPE_GATEWAY : "via Credit Card"
+    PAYMENT_DETAILS }|--|| SUSTAINABLE_BANK_API : "via Bank Transfer"
+
+    %% --- Table Schema ---
     CUSTOMER_DETAILS {
-        string email PK
+        string email PK "User ID"
         string name
-        string password_hash
-        string account_number_fk
-    }
-    
-    ORDER_DETAILS ||--|| PAYMENT_DETAILS : tracks
-    
-    ORDER_DETAILS {
-        string payment_id PK
-        int laptop_qty
-        int mobile_qty
-        string status
-    }
-    
-    PAYMENT_DETAILS {
-        string payment_id PK
-        string sender_account
-        string receiver_account
-        int amount
-        string status
+        string password "Hashed"
+        string account_number "Linked Bank ID"
+        string google_id "OAuth"
     }
 
-    BANK_DETAILS {
-        string account_number PK
-        int current_balance
-        string email
+    PRODUCT_DETAILS {
+        string product_id PK
+        string name
+        int total_pieces "Stock Level"
+        int current_price
+    }
+
+    ORDER_DETAILS {
+        string payment_id PK
+        int laptop "Qty"
+        int mobile "Qty"
+        int calculator "Qty"
+        string status "Order State"
+        string delivery_address
+    }
+
+    PAYMENT_DETAILS {
+        string payment_id PK
+        string sender_account "Source"
+        string receiver_account "Destination"
+        int amount
+        string status "Payment State"
+        string method "Stripe / Bank"
+    }
+
+    OTP_VERIFICATION {
+        string email PK
+        string otp
+        bigint expires
+    }
+
+    %% --- External Entities (For Visualization) ---
+    STRIPE_GATEWAY {
+        string api_key
+        string webhook "Updates Status"
+    }
+
+    SUSTAINABLE_BANK_API {
+        string account_api
+        string secure_pin "Verifies User"
     }
 ```
 
@@ -124,28 +173,48 @@ Detailed interaction between the Client, Server, Database, and Payment Gateways 
 
 ```mermaid
 sequenceDiagram
+    autonumber
+    
+    %% Define Participants
     participant User
     participant WebApp as Sylhet IT Shop
     participant DB as MySQL Database
     participant Gateway as Stripe/Bank
 
-    User->>WebApp: Click "Confirm & Pay"
-    WebApp->>DB: Create Order (Status: PENDING)
-    
-    alt Stripe Payment
-        WebApp->>Gateway: Request Payment Intent
-        Gateway-->>WebApp: Return Client Secret
-        WebApp-->>User: Show Stripe Form
-        User->>Gateway: Submit Card Details
-        Gateway->>WebApp: Webhook (Success)
-    else Bank Payment
-        WebApp-->>User: Request Transaction PIN
-        User->>WebApp: Submit PIN
-        WebApp->>DB: Verify Balance & PIN
+    %% Phase 1: Initiation (Blue Tint)
+    rect rgba(54, 162, 235, 0.1)
+        note right of User: 🛒 Order Initiation
+        User->>WebApp: Click "Confirm & Pay"
+        WebApp->>DB: Create Order (Status: PENDING)
     end
     
-    WebApp->>DB: Update Order (Status: CONFIRMED)
-    WebApp-->>User: Show Success Page
+    %% Phase 2: Payment Processing (Choice)
+    alt Stripe Payment (International)
+        %% Orange Tint for Stripe
+        rect rgba(255, 159, 64, 0.1)
+            note right of Gateway:  Credit Card Flow
+            WebApp->>Gateway: Request Payment Intent
+            Gateway-->>WebApp: Return Client Secret
+            WebApp-->>User: Show Stripe Form
+            User->>Gateway: Submit Card Details
+            Gateway->>WebApp: Webhook (Success)
+        end
+    else Bank Payment (Local)
+        %% Purple Tint for Bank
+        rect rgba(153, 102, 255, 0.1)
+            note right of Gateway:  Internal Bank Flow
+            WebApp-->>User: Request Transaction PIN
+            User->>WebApp: Submit PIN
+            WebApp->>DB: Verify Balance & PIN
+        end
+    end
+    
+    %% Phase 3: Completion (Green Tint)
+    rect rgba(75, 192, 192, 0.1)
+        note right of User:  Finalization
+        WebApp->>DB: Update Order (Status: CONFIRMED)
+        WebApp-->>User: Show Success Page
+    end
 ```
 
 -----
@@ -220,10 +289,12 @@ The project is structured into logical modules to separate concerns between the 
 
 ##  Developer Info
 
-**Md. Sazim Mahmudur Rahman** *Department of Computer Science and Engineering* *Shahjalal University of Science and Technology (SUST), Sylhet*
+**Md. Sazim Mahmudur Rahman** 
 
   * **Email:** [sazim87@student.sust.edu](mailto:sazim87@student.sust.edu)
   * **Registration No:** 2019331087
+  * Department of CSE
+  * Shahjalal University of Science and Technology , Sylhet
 
 -----
 
