@@ -19,7 +19,6 @@ This project simulates a real-world production environment with secure authentic
   * **Modern Shopping Experience:** Responsive product gallery with "Quick View" modals and live cart updates.
   * **Multi-Payment System:**
       * **International:** Secure Credit Card payments via **Stripe Payment Intents**.
-      * **Local:** Manual **bKash** verification flow.
       * **Bank:** Direct integration with **SUSTainable Bank** using a secure PIN system.
   * **Security:** 2-Step Verification (OTP) for linking bank accounts and resetting passwords.
 
@@ -32,7 +31,7 @@ This project simulates a real-world production environment with secure authentic
 
 ###  Banking System (Simulated Partner)
 
-  * **Independent Portal:** A fully functional banking system (`/bank_login.php`) with its own auth.
+  * **Independent Portal:** A fully functional banking system with its own auth.
   * **Transaction Logic:** Handles internal fund transfers securely with transactional integrity (ACID).
 
 -----
