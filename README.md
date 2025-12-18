@@ -44,6 +44,7 @@ This project simulates a real-world production environment with secure authentic
 |:---:|:---:|
 | <img src="demo/market_desktop.png" width="100%" alt="Shop Page Desktop"> <br> **Product Market & Modal** | <img src="demo/cart_mobile.png" width="250" alt="Cart Mobile"> <br> **Responsive Cart & Checkout** |
 | <img src="demo/stripe_checkout.PNG" width="100%" alt="Stripe Payment"> <br> **Secure Stripe Checkout** | <img src="demo/order_success_mobile.png" width="250" alt="Order Success"> <br> **Order Confirmation** |
+| <img src="demo/customer_dashboard_desktop.png" width="100%" alt="Customer Dashboard"> <br> **Customer Dashboard** | <img src="demo/customer_past_order_mobile.png" width="300" alt="Customer Past Orders"> <br> **Past Orders** |
 
 ###  Admin & Analytics
 
