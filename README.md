@@ -49,8 +49,8 @@ This project simulates a real-world production environment with secure authentic
 
 | Admin Dashboard | Inventory Management |
 |:---:|:---:|
-| <img src="demo/admin_dashboard.png" width="100%" alt="Admin Dashboard"> <br> **Real-time Analytics & Charts** | <img src="demo/admin_orders.png" width="100%" alt="Admin Orders"> <br> **Order Fulfillment & Stock Predictions** |
-
+| <img src="demo/admin_dashboard2.png" width="100%" alt="Admin Dashboard"> <br> **Real-time Analytics & Charts** | <img src="demo/admin_orders2.png" width="100%" alt="Admin Orders"> <br> **Order Manage & Stock Predictions** |
+| <img src="demo/admin_delivery_alert_desktop.png" width="100%" alt="Admin Delivery Alert"> <br> **Delivery Alert for Shortage** | <img src="demo/supplier_dashboard_desktop.png" width="100%" alt="Supplier Dashboard"> <br> **Supplier Dashboard** |
 ---
 
 ##  System Architecture & Workflows
